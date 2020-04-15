@@ -1,16 +1,8 @@
 <?php 
-	$severname = "localhost";
-
-	$username = "root";
-
-	$password = "";
-
-	$DBlocal= "blogs";
-
-// Tạo kết nối
-	$conn = new mysqli($severname, $username, $password,$DBlocal);
+	require_once('connection.php');
 // Tạo Truy vấn 
-	$query = "SELECT * FROM posts ORDER BY created_at desc limit 6";
+	$query = "SELECT p.*, c.title as 'category' FROM posts p LEFT JOIN categories c ON p.category_id = c.id WHERE p.status=1
+ORDER BY p.created_at desc limit 6";
 
 	$result = $conn->query($query);
 // THỰC HIỆN TRUY VẤN DỮ LIỆU TRONG TABLE posts
@@ -20,6 +12,18 @@
 	while ($row = $result->fetch_assoc()) {
 		$posts[] = $row;
 	}
+	//load category
+	$query_category = "SELECT * FROM categories";
+	$result_cate = $conn->query($query_category);
+	$categories = array();
+	while ($row_cate = $result_cate->fetch_assoc()) {
+		$categories[] = $row_cate;
+	}
+
+
+	//end load category
+
+
  ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,8 +59,10 @@
 
 		<!-- Header -->
 		<header id="header">
-			<!-- Nav -->
-			<div id="nav">
+			
+			
+						
+<div id="nav">
 				<!-- Main Nav -->
 				<div id="nav-fixed">
 					<div class="container">
@@ -67,13 +73,30 @@
 						<!-- /logo -->
 
 						<!-- nav -->
-						<ul class="nav-menu nav navbar-nav">
-							<li><a href="category.html">News</a></li>
+
+
+							<ul class="nav-menu nav navbar-nav">
+
+
+
+
+							<!-- <li><a href="category.html">News</a></li>
 							<li><a href="category.html">Popular</a></li>
 							<li class="cat-1"><a href="category.html">Web Design</a></li>
 							<li class="cat-2"><a href="category.html">JavaScript</a></li>
-							<li class="cat-3"><a href="category.html">Css</a></li>
-							<li class="cat-4"><a href="category.html">Jquery</a></li>
+							<li class="cat-3"><a href="category.html">Css</a></li> -->
+						<?php 
+							$i = 1;
+							foreach ($categories as $cate) {
+								
+							
+						 ?>
+							<li class="cat-<?=$i ?>"><a href="category.php?id=<?= $cate['id']; ?>"><?= $cate['title']; ?></a></li>
+						<?php  
+							$i++;
+							if($i==5)$i=1;
+						}
+						?>
 						</ul>
 						<!-- /nav -->
 
@@ -89,9 +112,7 @@
 						<!-- /search & aside toggle -->
 					</div>
 				</div>
-				<!-- /Main Nav -->
-
-				<!-- Aside Nav -->
+					<!-- Aside Nav -->
 				<div id="nav-aside">
 					<!-- nav -->
 					<div class="section-row">
@@ -148,8 +169,13 @@
 					<!-- /aside nav close -->
 				</div>
 				<!-- Aside Nav -->
-			</div>
+</div>
 			<!-- /Nav -->
+		
+				<!-- /Main Nav -->
+						
+						
+
 		</header>
 		<!-- /Header -->
 
@@ -212,7 +238,7 @@
 							<a class="post-img" href="blog-post.html"><img width="400px" height="300px" src="<?php echo $post['thumbnail']; ?>" alt="" ></a>
 							<div class="post-body">
 								<div class="post-meta">
-									<a class="post-category cat-1" href="category.html"><?php echo $post['title'] ?></a>
+									<a class="post-category cat-1" href="category.html"><?php echo $post['category'] ?></a>
 									<span class="post-date"> <?php echo $post['created_at'] ?>	</span>
 								</div>
 								<h3 class="post-title"><a href="blog-post.html"><?php echo $post['description'] ?></a></h3>
@@ -246,7 +272,7 @@
 									<a class="post-img" href="blog-post.html"><img src="<?php echo $new['thumbnail']; ?>" alt=""></a>
 									<div class="post-body">
 										<div class="post-meta">
-											<a class="post-category cat-3" href="category.html"><?php echo $new['title']; ?></a>
+											<a class="post-category cat-3" href="category.html"><?php echo $new['category']; ?></a>
 											<span class="post-date"><?php $new['created_at'] ?></span>
 										</div>
 										<h3 class="post-title"><a href="blog-post.html"><?php echo $new['description'] ?></a></h3>
@@ -333,7 +359,7 @@
 								<a class="post-img" href="blog-post.html"><img src="./img/post-2.jpg" alt=""></a>
 								<div class="post-body">
 									<div class="post-meta">
-										<a class="post-category cat-3" href="category.html">Jquery</a>
+										<a class="post-category cat-3" href="category.html">JQuery</a>
 										<span class="post-date">March 27, 2018</span>
 									</div>
 									<h3 class="post-title"><a href="blog-post.html">Ask HN: Does Anybody Still Use JQuery?</a></h3>

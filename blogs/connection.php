@@ -7,23 +7,8 @@
 
 	//kết nối đến csdl
 	$conn = new mysqli( $servername,$username, $password, $DBlocal);
-	//truy vấn query
-	$query = "SELECT * FROM posts";
-	//thực thi câu lệnh
-	$result = $conn->query($query);
-	//tạo một mảng chứa csdl
-	$posts = array();
-	
-	while ($row = $result->fetch_assoc()) {
-			$posts[] = $row;
-		}	
-	foreach ($posts as $post) {
 
 	
-	echo"<pre>";
-		print_r($post);
-	echo"</pre>";
-}
+
 
  ?>
- 

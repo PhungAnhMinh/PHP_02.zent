@@ -1,3 +1,43 @@
+<?php
+	require_once('connection.php');
+	//load category
+	$query_category = "SELECT * FROM categories";
+	$result_cate = $conn->query($query_category);
+	$categories = array();
+	while ($row_cate = $result_cate->fetch_assoc()) {
+		$categories[] = $row_cate;
+	}
+
+
+	//end load category
+//lay ra 3 ban ghi
+// lấy id của danh mục đang được chọn
+$id = $_GET['id'];
+//truy vấn 
+$query_post = "SELECT p.*, c.title as 'category' FROM posts p LEFT JOIN categories c ON p.category_id = c.id WHERE p.status=1 AND p.category_id=".$id." ORDER BY p.created_at desc limit 3";
+//thuc thi cau lenh
+$result_post = $conn->query($query_post);
+	
+$row_post = $result_post->fetch_assoc();
+$posts = array();
+	while ($row = $result_post->fetch_assoc()) {
+		$posts[] = $row;
+	}
+//lay ra 5 ban ghi
+// lấy id của danh mục đang được chọn
+$id = $_GET['id'];
+//truy vấn 
+$query_post = "SELECT p.*, c.title as 'category' FROM posts p LEFT JOIN categories c ON p.category_id = c.id WHERE p.status=1 AND p.category_id=".$id." ORDER BY p.created_at desc limit 3,5";
+//thuc thi cau lenh
+$result_5post = $conn->query($query_post);
+	
+$posts5 = array();
+	while ($row = $result_5post->fetch_assoc()) {
+		$posts5[] = $row;
+	}
+$cate_name = $_GET['cate'];
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -6,7 +46,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-		<title>WebMag HTML Template</title>
+		<title>Welcom Minh DEV</title>
 
 		<!-- Google font -->
 		<link href="https://fonts.googleapis.com/css?family=Nunito+Sans:700%7CNunito:300,600" rel="stylesheet"> 
@@ -32,25 +72,44 @@
 		
 		<!-- Header -->
 		<header id="header">
-			<!-- Nav -->
-			<div id="nav">
+		
+			
+						
+<div id="nav">
 				<!-- Main Nav -->
 				<div id="nav-fixed">
 					<div class="container">
 						<!-- logo -->
 						<div class="nav-logo">
-							<a href="index.html" class="logo"><img src="./img/logo.png" alt=""></a>
+							<a href="index.php" class="logo"><img src="./img/logo.png" alt=""></a>
 						</div>
 						<!-- /logo -->
 
 						<!-- nav -->
-						<ul class="nav-menu nav navbar-nav">
-							<li><a href="category.html">News</a></li>
+
+
+							<ul class="nav-menu nav navbar-nav">
+
+
+
+
+							<!-- <li><a href="category.html">News</a></li>
 							<li><a href="category.html">Popular</a></li>
 							<li class="cat-1"><a href="category.html">Web Design</a></li>
 							<li class="cat-2"><a href="category.html">JavaScript</a></li>
-							<li class="cat-3"><a href="category.html">Css</a></li>
-							<li class="cat-4"><a href="category.html">Jquery</a></li>
+							<li class="cat-3"><a href="category.html">Css</a></li> -->
+						<?php 
+							$i = 1;
+							foreach ($categories as $cate) {
+								
+							
+						 ?>
+							<li class="cat-<?=$i ?>"><a href="category.php?id=<?= $cate['id']; ?>&cate=<?= $cate['title']; ?>"><?= $cate['title']; ?></a></li>
+						<?php  
+							$i++;
+							if($i==5)$i=1;
+						}
+						?>
 						</ul>
 						<!-- /nav -->
 
@@ -66,14 +125,12 @@
 						<!-- /search & aside toggle -->
 					</div>
 				</div>
-				<!-- /Main Nav -->
-
-				<!-- Aside Nav -->
+					<!-- Aside Nav -->
 				<div id="nav-aside">
 					<!-- nav -->
 					<div class="section-row">
 						<ul class="nav-aside-menu">
-							<li><a href="index.html">Home</a></li>
+							<li><a href="index.php">Home</a></li>
 							<li><a href="about.html">About Us</a></li>
 							<li><a href="#">Join Us</a></li>
 							<li><a href="#">Advertisement</a></li>
@@ -100,9 +157,9 @@
 						</div>
 
 						<div class="post post-widget">
-							<a class="post-img" href="blog-post.html"><img src="./img/widget-4.jpg" alt=""></a>
+							<a class="post-img" href="blog-post.php"><img src="./img/widget-4.jpg" alt=""></a>
 							<div class="post-body">
-								<h3 class="post-title"><a href="blog-post.html">Tell-A-Tool: Guide To Web Design And Development Tools</a></h3>
+								<h3 class="post-title"><a href="blog-post.php">Tell-A-Tool: Guide To Web Design And Development Tools</a></h3>
 							</div>
 						</div>
 					</div>
@@ -125,24 +182,28 @@
 					<!-- /aside nav close -->
 				</div>
 				<!-- Aside Nav -->
-			</div>
+</div>
 			<!-- /Nav -->
-			
-			<!-- Page Header -->
+		
+				<!-- /Main Nav -->
 			<div class="page-header">
 				<div class="container">
 					<div class="row">
-						<div class="col-md-10">
-							<ul class="page-header-breadcrumb">
-								<li><a href="index.html">Home</a></li>
-								<li>JavaScript</li>
-							</ul>
-							<h1>JavaScript</h1>
-						</div>
+					<div class="col-md-10">
+						<ul class="page-header-breadcrumb">
+							<li><a href="index.php">Home</a></li>
+							<li><?= $cate_name ?></li>
+						</ul>
+						<h1><?= $cate_name ?></h1>
 					</div>
 				</div>
 			</div>
-			<!-- /Page Header -->
+		</div>
+
+
+					
+				
+			
 		</header>
 		<!-- /Header -->
 		
@@ -155,49 +216,46 @@
 					<div class="col-md-8">
 						<div class="row">
 							<!-- post -->
+							
 							<div class="col-md-12">
 								<div class="post post-thumb">
-									<a class="post-img" href="blog-post.html"><img src="./img/post-1.jpg" alt=""></a>
+									<a class="post-img" href="blog-post.php"><img src="<?= $row_post['thumbnail']?>" alt=""></a>
 									<div class="post-body">
 										<div class="post-meta">
-											<a class="post-category cat-2" href="#">JavaScript</a>
-											<span class="post-date">March 27, 2018</span>
+											<a class="post-category cat-2" href="#"><?= $row_post['category']?></a>
+											<span class="post-date"><?= $row_post['created_at']?></span>
 										</div>
-										<h3 class="post-title"><a href="blog-post.html">Javascript : Prototype vs Class</a></h3>
+										<h3 class="post-title"><a href="blog-post.php"><?= $row_post['title']?></a></h3>
 									</div>
 								</div>
 							</div>
+							
 							<!-- /post -->
 										
 							<!-- post -->
+							<?php 
+							
+							foreach ($posts as $post) {
+								
+							
+						 ?>
+
 							<div class="col-md-6">
 								<div class="post">
-									<a class="post-img" href="blog-post.html"><img src="./img/post-4.jpg" alt=""></a>
+									<a class="post-img" href="blog-post.php"><img src="<?= $row_post['thumbnail']?>" alt=""></a>
 									<div class="post-body">
 										<div class="post-meta">
-											<a class="post-category cat-2" href="#">JavaScript</a>
-											<span class="post-date">March 27, 2018</span>
+											<a class="post-category cat-2" href="#"><?= $row_post['category']?></a>
+											<span class="post-date"><?= $row_post['created_at']?></span>
 										</div>
-										<h3 class="post-title"><a href="blog-post.html">Chrome Extension Protects Against JavaScript-Based CPU Side-Channel Attacks</a></h3>
+										<h3 class="post-title"><a href="blog-post.php"><?= $row_post['title']?></a></h3>
 									</div>
 								</div>
 							</div>
+							<?php } ?>
 							<!-- /post -->
 
-							<!-- post -->
-							<div class="col-md-6">
-								<div class="post">
-									<a class="post-img" href="blog-post.html"><img src="./img/post-6.jpg" alt=""></a>
-									<div class="post-body">
-										<div class="post-meta">
-											<a class="post-category cat-2" href="#">JavaScript</a>
-											<span class="post-date">March 27, 2018</span>
-										</div>
-										<h3 class="post-title"><a href="blog-post.html">Why Node.js Is The Coolest Kid On The Backend Development Block!</a></h3>
-									</div>
-								</div>
-							</div>
-							<!-- /post -->
+							
 							
 							<div class="clearfix visible-md visible-lg"></div>
 							
@@ -212,68 +270,28 @@
 							<!-- ad -->
 							
 							<!-- post -->
-							<div class="col-md-12">
-								<div class="post post-row">
-									<a class="post-img" href="blog-post.html"><img src="./img/post-2.jpg" alt=""></a>
-									<div class="post-body">
-										<div class="post-meta">
-											<a class="post-category cat-2" href="#">JavaScript</a>
-											<span class="post-date">March 27, 2018</span>
-										</div>
-										<h3 class="post-title"><a href="blog-post.html">Ask HN: Does Anybody Still Use JQuery?</a></h3>
-										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam...</p>
-									</div>
-								</div>
-							</div>
-							<!-- /post -->
-							
-							<!-- post -->
-							<div class="col-md-12">
-								<div class="post post-row">
-									<a class="post-img" href="blog-post.html"><img src="./img/post-5.jpg" alt=""></a>
-									<div class="post-body">
-										<div class="post-meta">
-											<a class="post-category cat-2" href="#">JavaScript</a>
-											<span class="post-date">March 27, 2018</span>
-										</div>
-										<h3 class="post-title"><a href="blog-post.html">Microsoft’s TypeScript Fills A Long-standing Void In JavaScript</a></h3>
-										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam...</p>
-									</div>
-								</div>
-							</div>
-							<!-- /post -->
 
-							<!-- post -->
-							<div class="col-md-12">
-								<div class="post post-row">
-									<a class="post-img" href="blog-post.html"><img src="./img/post-3.jpg" alt=""></a>
-									<div class="post-body">
-										<div class="post-meta">
-											<a class="post-category cat-2" href="#">JavaScript</a>
-											<span class="post-date">March 27, 2018</span>
-										</div>
-										<h3 class="post-title"><a href="blog-post.html">Javascript : Prototype vs Class</a></h3>
-										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam...</p>
-									</div>
-								</div>
-							</div>
-							<!-- /post -->
+							<?php 
 							
-							<!-- post -->
+							foreach ($posts5 as $post) {
+								
+							
+						 ?>
 							<div class="col-md-12">
 								<div class="post post-row">
-									<a class="post-img" href="blog-post.html"><img src="./img/post-1.jpg" alt=""></a>
+									<a class="post-img" href="blog-post.php"><img src="<?= $row_post['thumbnail']?>" alt=""></a>
 									<div class="post-body">
 										<div class="post-meta">
-											<a class="post-category cat-2" href="#">JavaScript</a>
-											<span class="post-date">March 27, 2018</span>
+											<a class="post-category cat-2" href="#"><?= $row_post['category']?></a>
+											<span class="post-date"><?= $row_post['created_at']?></span>
 										</div>
-										<h3 class="post-title"><a href="blog-post.html">Why Node.js Is The Coolest Kid On The Backend Development Block!</a></h3>
-										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam...</p>
+										<h3 class="post-title"><a href="blog-post.php"><?= $row_post['title']?></a></h3>
+										<p><?= $row_post['description']?></p>
 									</div>
 								</div>
 							</div>
-							<!-- /post -->
+							<?php } ?>
+							
 							
 							<div class="col-md-12">
 								<div class="section-row">
@@ -299,16 +317,16 @@
 							</div>
 
 							<div class="post post-widget">
-								<a class="post-img" href="blog-post.html"><img src="./img/widget-1.jpg" alt=""></a>
+								<a class="post-img" href="blog-post.php"><img src="./img/widget-1.jpg" alt=""></a>
 								<div class="post-body">
-									<h3 class="post-title"><a href="blog-post.html">Tell-A-Tool: Guide To Web Design And Development Tools</a></h3>
+									<h3 class="post-title"><a href="blog-post.php">Tell-A-Tool: Guide To Web Design And Development Tools</a></h3>
 								</div>
 							</div>
 
 							<div class="post post-widget">
-								<a class="post-img" href="blog-post.html"><img src="./img/widget-2.jpg" alt=""></a>
+								<a class="post-img" href="blog-post.php"><img src="./img/widget-2.jpg" alt=""></a>
 								<div class="post-body">
-									<h3 class="post-title"><a href="blog-post.html">Pagedraw UI Builder Turns Your Website Design Mockup Into Code Automatically</a></h3>
+									<h3 class="post-title"><a href="blog-post.php">Pagedraw UI Builder Turns Your Website Design Mockup Into Code Automatically</a></h3>
 								</div>
 							</div>
 
