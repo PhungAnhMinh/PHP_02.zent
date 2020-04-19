@@ -15,19 +15,21 @@
 $id = $_GET['id'];
 //truy vấn 
 $query_post = "SELECT p.*, c.title as 'category' FROM posts p LEFT JOIN categories c ON p.category_id = c.id WHERE p.status=1 AND p.category_id=".$id." ORDER BY p.created_at desc limit 3";
+
 //thuc thi cau lenh
 $result_post = $conn->query($query_post);
 	
 $row_post = $result_post->fetch_assoc();
-$posts = array();
+$posts3 = array();
 	while ($row = $result_post->fetch_assoc()) {
-		$posts[] = $row;
+		$posts3[] = $row;
 	}
 //lay ra 5 ban ghi
 // lấy id của danh mục đang được chọn
 $id = $_GET['id'];
 //truy vấn 
 $query_post = "SELECT p.*, c.title as 'category' FROM posts p LEFT JOIN categories c ON p.category_id = c.id WHERE p.status=1 AND p.category_id=".$id." ORDER BY p.created_at desc limit 3,5";
+
 //thuc thi cau lenh
 $result_5post = $conn->query($query_post);
 	
@@ -36,6 +38,19 @@ $posts5 = array();
 		$posts5[] = $row;
 	}
 $cate_name = $_GET['cate'];
+
+//load 4 bai read most
+$query4 = "SELECT p.*, c.title as 'category' FROM posts p LEFT JOIN categories c ON p.category_id = c.id WHERE p.status=1
+ORDER BY p.created_at desc limit 8,4";
+
+	$result4 = $conn->query($query4);
+// THỰC HIỆN TRUY VẤN DỮ LIỆU TRONG TABLE posts
+	// Tạo Mảng Lưu Dữ Liệu Của Các Cột
+	$posts4 = array();
+
+	while ($row = $result4->fetch_assoc()) {
+		$posts4[] = $row;
+	}
 
 ?>
 <!DOCTYPE html>
@@ -75,115 +90,9 @@ $cate_name = $_GET['cate'];
 		
 			
 						
-<div id="nav">
-				<!-- Main Nav -->
-				<div id="nav-fixed">
-					<div class="container">
-						<!-- logo -->
-						<div class="nav-logo">
-							<a href="index.php" class="logo"><img src="./img/logo.png" alt=""></a>
-						</div>
-						<!-- /logo -->
-
-						<!-- nav -->
-
-
-							<ul class="nav-menu nav navbar-nav">
-
-
-
-
-							<!-- <li><a href="category.html">News</a></li>
-							<li><a href="category.html">Popular</a></li>
-							<li class="cat-1"><a href="category.html">Web Design</a></li>
-							<li class="cat-2"><a href="category.html">JavaScript</a></li>
-							<li class="cat-3"><a href="category.html">Css</a></li> -->
-						<?php 
-							$i = 1;
-							foreach ($categories as $cate) {
-								
-							
-						 ?>
-							<li class="cat-<?=$i ?>"><a href="category.php?id=<?= $cate['id']; ?>&cate=<?= $cate['title']; ?>"><?= $cate['title']; ?></a></li>
-						<?php  
-							$i++;
-							if($i==5)$i=1;
-						}
-						?>
-						</ul>
-						<!-- /nav -->
-
-						<!-- search & aside toggle -->
-						<div class="nav-btns">
-							<button class="aside-btn"><i class="fa fa-bars"></i></button>
-							<button class="search-btn"><i class="fa fa-search"></i></button>
-							<div class="search-form">
-								<input class="search-input" type="text" name="search" placeholder="Enter Your Search ...">
-								<button class="search-close"><i class="fa fa-times"></i></button>
-							</div>
-						</div>
-						<!-- /search & aside toggle -->
-					</div>
-				</div>
-					<!-- Aside Nav -->
-				<div id="nav-aside">
-					<!-- nav -->
-					<div class="section-row">
-						<ul class="nav-aside-menu">
-							<li><a href="index.php">Home</a></li>
-							<li><a href="about.html">About Us</a></li>
-							<li><a href="#">Join Us</a></li>
-							<li><a href="#">Advertisement</a></li>
-							<li><a href="contact.html">Contacts</a></li>
-						</ul>
-					</div>
-					<!-- /nav -->
-
-					<!-- widget posts -->
-					<div class="section-row">
-						<h3>Recent Posts</h3>
-						<div class="post post-widget">
-							<a class="post-img" href="blog-post.html"><img src="./img/widget-2.jpg" alt=""></a>
-							<div class="post-body">
-								<h3 class="post-title"><a href="blog-post.html">Pagedraw UI Builder Turns Your Website Design Mockup Into Code Automatically</a></h3>
-							</div>
-						</div>
-
-						<div class="post post-widget">
-							<a class="post-img" href="blog-post.html"><img src="./img/widget-3.jpg" alt=""></a>
-							<div class="post-body">
-								<h3 class="post-title"><a href="blog-post.html">Why Node.js Is The Coolest Kid On The Backend Development Block!</a></h3>
-							</div>
-						</div>
-
-						<div class="post post-widget">
-							<a class="post-img" href="blog-post.php"><img src="./img/widget-4.jpg" alt=""></a>
-							<div class="post-body">
-								<h3 class="post-title"><a href="blog-post.php">Tell-A-Tool: Guide To Web Design And Development Tools</a></h3>
-							</div>
-						</div>
-					</div>
-					<!-- /widget posts -->
-
-					<!-- social links -->
-					<div class="section-row">
-						<h3>Follow us</h3>
-						<ul class="nav-aside-social">
-							<li><a href="#"><i class="fa fa-facebook"></i></a></li>
-							<li><a href="#"><i class="fa fa-twitter"></i></a></li>
-							<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-							<li><a href="#"><i class="fa fa-pinterest"></i></a></li>
-						</ul>
-					</div>
-					<!-- /social links -->
-
-					<!-- aside nav close -->
-					<button class="nav-aside-close"><i class="fa fa-times"></i></button>
-					<!-- /aside nav close -->
-				</div>
-				<!-- Aside Nav -->
-</div>
-			<!-- /Nav -->
+<?php
+	require_once('MainNav.php');
+	?>
 		
 				<!-- /Main Nav -->
 			<div class="page-header">
@@ -219,13 +128,13 @@ $cate_name = $_GET['cate'];
 							
 							<div class="col-md-12">
 								<div class="post post-thumb">
-									<a class="post-img" href="blog-post.php"><img src="<?= $row_post['thumbnail']?>" alt=""></a>
+									<a class="post-img" href="blog-post.php?id=<?= $row_post['id']?>"><img width="500px" height="400px" src="<?= $row_post['thumbnail']?>" alt=""></a>
 									<div class="post-body">
 										<div class="post-meta">
 											<a class="post-category cat-2" href="#"><?= $row_post['category']?></a>
 											<span class="post-date"><?= $row_post['created_at']?></span>
 										</div>
-										<h3 class="post-title"><a href="blog-post.php"><?= $row_post['title']?></a></h3>
+										<h3 class="post-title"><a href="blog-post.php?id=<?= $row_post['id']?>"><?= $row_post['title']?></a></h3>
 									</div>
 								</div>
 							</div>
@@ -235,20 +144,20 @@ $cate_name = $_GET['cate'];
 							<!-- post -->
 							<?php 
 							
-							foreach ($posts as $post) {
+							foreach ($posts3 as $post) {
 								
 							
 						 ?>
 
 							<div class="col-md-6">
 								<div class="post">
-									<a class="post-img" href="blog-post.php"><img src="<?= $row_post['thumbnail']?>" alt=""></a>
+									<a class="post-img" href="blog-post.php?id=<?= $row_post['id']?>"><img width="300px" height="200px" src="<?= $post['thumbnail']?>" alt=""></a>
 									<div class="post-body">
 										<div class="post-meta">
-											<a class="post-category cat-2" href="#"><?= $row_post['category']?></a>
-											<span class="post-date"><?= $row_post['created_at']?></span>
+											<a class="post-category cat-2" href="#"><?= $post['category']?></a>
+											<span class="post-date"><?= $post['created_at']?></span>
 										</div>
-										<h3 class="post-title"><a href="blog-post.php"><?= $row_post['title']?></a></h3>
+										<h3 class="post-title"><a href="blog-post.php?id=<?= $row_post['id']?>"><?= $post['title']?></a></h3>
 									</div>
 								</div>
 							</div>
@@ -279,14 +188,14 @@ $cate_name = $_GET['cate'];
 						 ?>
 							<div class="col-md-12">
 								<div class="post post-row">
-									<a class="post-img" href="blog-post.php"><img src="<?= $row_post['thumbnail']?>" alt=""></a>
+									<a class="post-img" href="blog-post.php?id=<?= $row_post['id']?>"><img width="300px" height="200px" src="<?= $post['thumbnail']?>" alt=""></a>
 									<div class="post-body">
 										<div class="post-meta">
-											<a class="post-category cat-2" href="#"><?= $row_post['category']?></a>
-											<span class="post-date"><?= $row_post['created_at']?></span>
+											<a class="post-category cat-2" href="#"><?= $post['category']?></a>
+											<span class="post-date"><?= $post['created_at']?></span>
 										</div>
-										<h3 class="post-title"><a href="blog-post.php"><?= $row_post['title']?></a></h3>
-										<p><?= $row_post['description']?></p>
+										<h3 class="post-title"><a href="blog-post.php?id=<?= $row_post['id']?>"><?= $post['title']?></a></h3>
+										<p><?= $post['description']?></p>
 									</div>
 								</div>
 							</div>
@@ -316,33 +225,17 @@ $cate_name = $_GET['cate'];
 								<h2>Most Read</h2>
 							</div>
 
+							<?php 
+								foreach ($posts4 as $post) {
+									
+							 ?>
 							<div class="post post-widget">
-								<a class="post-img" href="blog-post.php"><img src="./img/widget-1.jpg" alt=""></a>
+								<a class="post-img" href="blog-post.php"><img width="200px" height="100px" src="<?= $post['thumbnail']?>" alt=""></a>
 								<div class="post-body">
-									<h3 class="post-title"><a href="blog-post.php">Tell-A-Tool: Guide To Web Design And Development Tools</a></h3>
+									<h3 class="post-title"><a href="blog-post.php"><?= $post['title']?></a></h3>
 								</div>
 							</div>
-
-							<div class="post post-widget">
-								<a class="post-img" href="blog-post.php"><img src="./img/widget-2.jpg" alt=""></a>
-								<div class="post-body">
-									<h3 class="post-title"><a href="blog-post.php">Pagedraw UI Builder Turns Your Website Design Mockup Into Code Automatically</a></h3>
-								</div>
-							</div>
-
-							<div class="post post-widget">
-								<a class="post-img" href="blog-post.html"><img src="./img/widget-3.jpg" alt=""></a>
-								<div class="post-body">
-									<h3 class="post-title"><a href="blog-post.html">Why Node.js Is The Coolest Kid On The Backend Development Block!</a></h3>
-								</div>
-							</div>
-
-							<div class="post post-widget">
-								<a class="post-img" href="blog-post.html"><img src="./img/widget-4.jpg" alt=""></a>
-								<div class="post-body">
-									<h3 class="post-title"><a href="blog-post.html">Tell-A-Tool: Guide To Web Design And Development Tools</a></h3>
-								</div>
-							</div>
+						<?php } ?>
 						</div>
 						<!-- /post widget -->
 						

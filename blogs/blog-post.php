@@ -1,20 +1,31 @@
-<? php
+<?php
 	require_once('connection.php');
-	//load category
+//load category
 	$query_category = "SELECT * FROM categories";
 	$result_cate = $conn->query($query_category);
 	$categories = array();
 	while ($row_cate = $result_cate->fetch_assoc()) {
 		$categories[] = $row_cate;
 	}
-
-
-	//end load category
-$id=$_GET['id'];
-$query_post = "SELECT * from posts where id=".$id;
-//thuc thi cau lenh
+//end load category
+// lấy id của danh mục đang được chọn
+$id = $_GET['id'];
+$query_post = "SELECT * FROM posts WHERE id=".$id;
 $result_post = $conn->query($query_post);
-$posts = $result_post->fetch_assoc();
+$post = $result_post->fetch_assoc();
+
+//load 4 bai read most
+$query4 = "SELECT p.*, c.title as 'category' FROM posts p LEFT JOIN categories c ON p.category_id = c.id WHERE p.status=1
+ORDER BY p.created_at desc limit 8,4";
+
+	$result4 = $conn->query($query4);
+// THỰC HIỆN TRUY VẤN DỮ LIỆU TRONG TABLE posts
+	// Tạo Mảng Lưu Dữ Liệu Của Các Cột
+	$posts4 = array();
+
+	while ($row = $result4->fetch_assoc()) {
+		$posts4[] = $row;
+	}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,112 +62,20 @@ $posts = $result_post->fetch_assoc();
 		<!-- Header -->
 		<header id="header">
 			<!-- Nav -->
-			<div id="nav">
-				<!-- Main Nav -->
-				<div id="nav-fixed">
-					<div class="container">
-						<!-- logo -->
-						<div class="nav-logo">
-							<a href="index.php" class="logo"><img src="./img/logo.png" alt=""></a>
-						</div>
-						<!-- /logo -->
-
-						<!-- nav -->
-						<ul class="nav-menu nav navbar-nav">
-							<li><a href="category.php">News</a></li>
-							<li><a href="category.php">Popular</a></li>
-							<li class="cat-1"><a href="category.php">Web Design</a></li>
-							<li class="cat-2"><a href="category.php">JavaScript</a></li>
-							<li class="cat-3"><a href="category.php">Css</a></li>
-							<li class="cat-4"><a href="category.php">Jquery</a></li>
-						</ul>
-						<!-- /nav -->
-
-						<!-- search & aside toggle -->
-						<div class="nav-btns">
-							<button class="aside-btn"><i class="fa fa-bars"></i></button>
-							<button class="search-btn"><i class="fa fa-search"></i></button>
-							<div class="search-form">
-								<input class="search-input" type="text" name="search" placeholder="Enter Your Search ...">
-								<button class="search-close"><i class="fa fa-times"></i></button>
-							</div>
-						</div>
-						<!-- /search & aside toggle -->
-					</div>
-				</div>
-				<!-- /Main Nav -->
-
-				<!-- Aside Nav -->
-				<div id="nav-aside">
-					<!-- nav -->
-					<div class="section-row">
-						<ul class="nav-aside-menu">
-							<li><a href="index.php">Home</a></li>
-							<li><a href="about.html">About Us</a></li>
-							<li><a href="#">Join Us</a></li>
-							<li><a href="#">Advertisement</a></li>
-							<li><a href="contact.html">Contacts</a></li>
-						</ul>
-					</div>
-					<!-- /nav -->
-
-					<!-- widget posts -->
-					<div class="section-row">
-						<h3>Recent Posts</h3>
-						<div class="post post-widget">
-							<a class="post-img" href="blog-post.php"><img src="./img/widget-2.jpg" alt=""></a>
-							<div class="post-body">
-								<h3 class="post-title"><a href="blog-post.php">Pagedraw UI Builder Turns Your Website Design Mockup Into Code Automatically</a></h3>
-							</div>
-						</div>
-
-						<div class="post post-widget">
-							<a class="post-img" href="blog-post.php"><img src="./img/widget-3.jpg" alt=""></a>
-							<div class="post-body">
-								<h3 class="post-title"><a href="blog-post.php">Why Node.js Is The Coolest Kid On The Backend Development Block!</a></h3>
-							</div>
-						</div>
-
-						<div class="post post-widget">
-							<a class="post-img" href="blog-post.php"><img src="./img/widget-4.jpg" alt=""></a>
-							<div class="post-body">
-								<h3 class="post-title"><a href="blog-post.php">Tell-A-Tool: Guide To Web Design And Development Tools</a></h3>
-							</div>
-						</div>
-					</div>
-					<!-- /widget posts -->
-
-					<!-- social links -->
-					<div class="section-row">
-						<h3>Follow us</h3>
-						<ul class="nav-aside-social">
-							<li><a href="#"><i class="fa fa-facebook"></i></a></li>
-							<li><a href="#"><i class="fa fa-twitter"></i></a></li>
-							<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-							<li><a href="#"><i class="fa fa-pinterest"></i></a></li>
-						</ul>
-					</div>
-					<!-- /social links -->
-
-					<!-- aside nav close -->
-					<button class="nav-aside-close"><i class="fa fa-times"></i></button>
-					<!-- /aside nav close -->
-				</div>
-				<!-- Aside Nav -->
-			</div>
-			<!-- /Nav -->
-			
+			<?php
+	require_once('MainNav.php');
+	?>
 			<!-- Page Header -->
 			<div id="post-header" class="page-header">
-				<div class="background-img" style="background-image: url('./img/post-page.jpg');"></div>
+				<div class="background-img" style="background-image: url('<?= $post['thumbnail']?>');"></div>
 				<div class="container">
 					<div class="row">
 						<div class="col-md-10">
 							<div class="post-meta">
 								<a class="post-category cat-2" href="category.php">JavaScript</a>
-								<span class="post-date"><?= posts['created_at'] ?></span>
+								<span class="post-date"><?= $post['created_at']?></span>
 							</div>
-							
+							<h1><?= $post['title']?></h1>
 						</div>
 					</div>
 				</div>
@@ -176,8 +95,8 @@ $posts = $result_post->fetch_assoc();
 						<div class="section-row sticky-container">
 							<div class="main-post">
 								
-								<p><?= posts['description'] ?></p>
-								<p><?= posts['contents'] ?></p>
+								<h3><?= $post['description']?></h3>
+								<p><?= $post['contents']?></p>
 							</div>
 							<div class="post-shares sticky-shares">
 								<a href="#" class="share-facebook"><i class="fa fa-facebook"></i></a>
@@ -334,33 +253,17 @@ $posts = $result_post->fetch_assoc();
 								<h2>Most Read</h2>
 							</div>
 
+							<?php 
+								foreach ($posts4 as $post) {
+									
+							 ?>
 							<div class="post post-widget">
-								<a class="post-img" href="blog-post.html"><img src="./img/widget-1.jpg" alt=""></a>
+								<a class="post-img" href="blog-post.php"><img width="200px" height="100px" src="<?= $post['thumbnail']?>" alt=""></a>
 								<div class="post-body">
-									<h3 class="post-title"><a href="blog-post.html">Tell-A-Tool: Guide To Web Design And Development Tools</a></h3>
+									<h3 class="post-title"><a href="blog-post.php"><?= $post['title']?></a></h3>
 								</div>
 							</div>
-
-							<div class="post post-widget">
-								<a class="post-img" href="blog-post.html"><img src="./img/widget-2.jpg" alt=""></a>
-								<div class="post-body">
-									<h3 class="post-title"><a href="blog-post.html">Pagedraw UI Builder Turns Your Website Design Mockup Into Code Automatically</a></h3>
-								</div>
-							</div>
-
-							<div class="post post-widget">
-								<a class="post-img" href="blog-post.html"><img src="./img/widget-3.jpg" alt=""></a>
-								<div class="post-body">
-									<h3 class="post-title"><a href="blog-post.html">Why Node.js Is The Coolest Kid On The Backend Development Block!</a></h3>
-								</div>
-							</div>
-
-							<div class="post post-widget">
-								<a class="post-img" href="blog-post.html"><img src="./img/widget-4.jpg" alt=""></a>
-								<div class="post-body">
-									<h3 class="post-title"><a href="blog-post.html">Tell-A-Tool: Guide To Web Design And Development Tools</a></h3>
-								</div>
-							</div>
+						<?php } ?>
 						</div>
 						<!-- /post widget -->
 
